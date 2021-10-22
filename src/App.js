@@ -1,30 +1,39 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
 
-import './App.css';
+import Welcome from './Containers/Welcome';
+import GridDemo from './Containers/GridDemo';
 
-function App() {
-  const { loading, error, data } = useQuery(gql`
-  query {
-    olympicWinners (limit: 5) {
-      age
-      athlete
-      sport
-    }
-  }
-  `);
-  if(loading) {
-    return <div>loading...</div>
-  }
-  if (error) {
-    return <div>Error loading: {error}</div>
-  }
+const App = () => {
   return (
-    <div className="App">
-      {data.olympicWinners.map(winner => <div>{winner.athlete}</div>)}
-    </div>
-  );
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/welcome">Welcome</Link>
+            </li>
+            <li>
+              <Link to="/grid">Grid Demo</Link>
+            </li>
+          </ul>
+        </nav>
+        <Switch>
+          <Route path="/welcome">
+            <Welcome />
+          </Route>
+          <Route path="/grid">
+            <GridDemo />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  )
 }
 
 export default App;
