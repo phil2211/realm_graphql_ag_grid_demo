@@ -1,10 +1,3 @@
-import {
-    ColDef,
-    SideBarDef,
-    ColumnVisibleEvent,
-    SortChangedEvent,
-} from "ag-grid-community";
-
 const columnDefs = [
     { field: "athlete" },
     { field: "age", hide: true },
@@ -55,7 +48,7 @@ const onColumnVisible = (params) => {
 }
 
 const onSortChanged = (params) => {
-    params.api.purgeServerSideCache();
+    params.api.refreshServerSideStore({purge: true});
 }
 
 const rowSelection = "single";
@@ -65,6 +58,7 @@ const rowModelType = "serverSide";
 const cacheBlockSize = 10;
 
 const serverSideStoreType = "partial";
+const maxBlocksInCache = 5;
 
 export default {
     columnDefs,
@@ -76,5 +70,6 @@ export default {
     rowModelType,
     rowSelection,
     cacheBlockSize,
-    serverSideStoreType
+    serverSideStoreType,
+    maxBlocksInCache
 }

@@ -8,7 +8,7 @@ export const createServerSideDatasource = function () {
             let {
                 startRow,
                 endRow,
-                // sortModel,
+                sortModel,
                 // filterModel,
                 // groupKeys,
                 // pivotCols,
@@ -17,13 +17,13 @@ export const createServerSideDatasource = function () {
                 // valueCols,
             } = params.request;
 
-            // sortModel = sortModel.length > 0 ? sortModel : undefined;
+            sortModel.map(model => model.sort = model.sort.toUpperCase());
             const visibleColumnIds = params.columnApi.getAllDisplayedColumns().map(col => col.getColId());
 
             const query = {
                 query: gql`
-                    query GetRows($paginationInput: Pagination) {
-                        getRows(input:$paginationInput) {
+                    query getGridData($queryModelInput: GridQueryModel) {
+                        getGridData(input:$queryModelInput) {
                             lastRow
                             rows { 
                                 id, 
@@ -33,16 +33,16 @@ export const createServerSideDatasource = function () {
                     }
                 `,
                 variables: {
-                    "paginationInput": {
+                    "queryModelInput": {
                         startRow,
                         endRow,
-                        // sortModel  
+                        sortModel  
                     }
                 }
             };
             console.log(JSON.stringify(query));
             client.query(query)
-                .then(res => res.data.getRows)
+                .then(res => res.data.getGridData)
                 .then(({ lastRow, rows }) => {
                     //console.log('Response', lastRow, rows);
                     params.successCallback(rows, lastRow);
