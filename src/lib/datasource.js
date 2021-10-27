@@ -17,7 +17,7 @@ export const createServerSideDatasource = function () {
                 // valueCols,
             } = params.request;
 
-            sortModel = sortModel.length > 0 ? sortModel : undefined;
+            // sortModel = sortModel.length > 0 ? sortModel : undefined;
             const visibleColumnIds = params.columnApi.getAllDisplayedColumns().map(col => col.getColId());
 
             const query = {
@@ -44,7 +44,7 @@ export const createServerSideDatasource = function () {
             client.query(query)
                 .then(res => res.data.getRows)
                 .then(({ lastRow, rows }) => {
-                    console.log('Response', lastRow, rows);
+                    //console.log('Response', lastRow, rows);
                     params.successCallback(rows, lastRow);
                 })
                 .catch(err => {
