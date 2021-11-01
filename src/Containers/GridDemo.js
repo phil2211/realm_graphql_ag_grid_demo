@@ -14,7 +14,7 @@ const Grid = () => {
   const [gridApi, setGridApi] = useState(null);
   const [columnApi, setColumnApi] = useState(null);
 
-  const datasource = createServerSideDatasource();
+  const datasource = createServerSideDatasource(GridOptions);
 
   const onGridReady = (params) => {
     setGridApi(params.api);
@@ -24,6 +24,10 @@ const Grid = () => {
     params.api.sizeColumnsToFit();
   };
 
+  const externalFilterChanged = (newValue) => {
+      console.log(newValue.target.value)
+  }
+
   return (
     <div className="container my-4">
       <div className="card my-3">
@@ -31,9 +35,12 @@ const Grid = () => {
           {<img src={realmLogo} alt="MongoDB Realm Logo" />}
         </div>
       </div>
+        <label>Search Grid
+            <input type="text" name="filter" id="filter" onChange={externalFilterChanged} />
+        </label>
       <div
         id="myGrid"
-        style={{ height: "calc(100vh - 100px)" }}
+        style={{ height: "calc(100vh - 250px)" }}
         className="ag-theme-alpine-dark">
         <AgGridReact
           gridOptions={GridOptions}

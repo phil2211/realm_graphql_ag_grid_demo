@@ -1,20 +1,21 @@
 const columnDefs = [
     { field: "athlete" },
-    { field: "age", hide: true },
-    { field: "country" },
+    { field: "age", hide: true},
+    { field: "country", enableRowGroup: true },
     { field: "year" },
-    { field: "date", hide: true },
-    { field: "sport" },
-    { field: "gold", hide: true },
-    { field: "silver", hide: true },
-    { field: "bronze", hide: true },
-    { field: "total", hide: true }
+    { field: "sport", enableRowGroup: true },
+    { field: "gold", type: "valueColumn" },
+    { field: "silver", type: "valueColumn" },
+    { field: "bronze", type: "valueColumn" },
+    { field: "total", type: "valueColumn" }
 ];
 
 const defaultColDef = {
     sortable: true,
     resizable: true
 }
+
+const serverSideSortingAlwaysResets = true
 
 const sideBar = {
     toolPanels: [
@@ -25,7 +26,7 @@ const sideBar = {
             iconKey: 'columns',
             toolPanel: 'agColumnsToolPanel',
             toolPanelParams: {
-                suppressRowGroups: true,
+                suppressRowGroups: false,
                 suppressValues: true,
                 suppressPivots: true,
                 suppressPivotMode: true,
@@ -39,7 +40,7 @@ const sideBar = {
     defaultToolPanel: 'columns',
 }
 
-const getRowNodeId = (data) => data.id;
+//const getRowNodeId = (data) => data.id;
 
 
 const onColumnVisible = (params) => {
@@ -55,21 +56,20 @@ const rowSelection = "single";
 
 const rowModelType = "serverSide";
 
-const cacheBlockSize = 10;
+const cacheBlockSize = 20;
 
 const serverSideStoreType = "partial";
-const maxBlocksInCache = 5;
 
 export default {
     columnDefs,
     defaultColDef,
     sideBar,
-    getRowNodeId,
+    //getRowNodeId,
     onColumnVisible,
     onSortChanged,
     rowModelType,
     rowSelection,
     cacheBlockSize,
     serverSideStoreType,
-    maxBlocksInCache
+    serverSideSortingAlwaysResets
 }

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { client } from './apolloClient';
 
-export const createServerSideDatasource = function () {
+export const createServerSideDatasource = function (gridOptions) {
     return {
         getRows: function (params) {
             console.log('Request', params.request)
@@ -10,24 +10,24 @@ export const createServerSideDatasource = function () {
                 endRow,
                 sortModel,
                 // filterModel,
-                // groupKeys,
+                groupKeys,
                 // pivotCols,
                 // pivotMode,
-                // rowGroupCols,
+                rowGroupCols,
                 // valueCols,
             } = params.request;
 
             sortModel.map(model => model.sort = model.sort.toUpperCase());
-            const visibleColumnIds = params.columnApi.getAllDisplayedColumns().map(col => col.getColId());
-
+            //const visibleColumnIds = params.columnApi.getAllDisplayedColumns().map(col => col.getColId()).filter(colName => colName !== "ag-Grid-AutoColumn");
+            const fields = gridOptions.columnDefs.map(col => col.field);
+            
             const query = {
                 query: gql`
                     query getGridData($queryModelInput: GridQueryModel) {
                         getGridData(input:$queryModelInput) {
                             lastRow
                             rows { 
-                                id, 
-                                ${visibleColumnIds.join('\n')}
+                                ${fields}
                             }
                         }
                     }
@@ -36,7 +36,9 @@ export const createServerSideDatasource = function () {
                     "queryModelInput": {
                         startRow,
                         endRow,
-                        sortModel  
+                        sortModel,
+                        groupKeys,
+                        rowGroupCols  
                     }
                 }
             };
