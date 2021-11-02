@@ -2,12 +2,12 @@ const columnDefs = [
     { field: "athlete" },
     { field: "age", hide: true},
     { field: "country", enableRowGroup: true },
-    { field: "year" },
+    { field: "year", enableRowGroup: true, hide: true },
     { field: "sport", enableRowGroup: true },
     { field: "gold", type: "valueColumn" },
-    { field: "silver", type: "valueColumn" },
-    { field: "bronze", type: "valueColumn" },
-    { field: "total", type: "valueColumn" }
+    { field: "silver", type: "valueColumn", hide: true },
+    { field: "bronze", type: "valueColumn", hide: true },
+    { field: "total", type: "valueColumn", hide: true }
 ];
 
 const defaultColDef = {
@@ -40,7 +40,7 @@ const sideBar = {
     defaultToolPanel: 'columns',
 }
 
-//const getRowNodeId = (data) => data.id;
+const getRowNodeId = (data) => data.id;
 
 
 const onColumnVisible = (params) => {
@@ -71,5 +71,5 @@ export default {
     rowSelection,
     cacheBlockSize,
     serverSideStoreType,
-    serverSideSortingAlwaysResets
+    //serverSideSortingAlwaysResets
 }

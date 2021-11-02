@@ -27,7 +27,7 @@ export const createServerSideDatasource = function (gridOptions) {
                         getGridData(input:$queryModelInput) {
                             lastRow
                             rows { 
-                                ${fields}
+                            ${/*visibleColumnIds.join('\n') */ fields }
                             }
                         }
                     }
