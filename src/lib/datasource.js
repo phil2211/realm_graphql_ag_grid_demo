@@ -14,7 +14,7 @@ export const createServerSideDatasource = function (gridOptions) {
                 // pivotCols,
                 // pivotMode,
                 rowGroupCols,
-                // valueCols,
+                valueCols,
             } = params.request;
 
             sortModel.map(model => model.sort = model.sort.toUpperCase());
@@ -38,7 +38,8 @@ export const createServerSideDatasource = function (gridOptions) {
                         endRow,
                         sortModel,
                         groupKeys,
-                        rowGroupCols  
+                        rowGroupCols,
+                        valueCols  
                     }
                 }
             };

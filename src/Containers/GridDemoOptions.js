@@ -10,12 +10,24 @@ const columnDefs = [
     { field: "total", type: "valueColumn", hide: true }
 ];
 
+const columnTypes=  {
+    dimension: {
+      enableRowGroup: true,
+      enablePivot: true,
+    },
+    valueColumn: {
+      width: 150,
+      aggFunc: 'sum',
+      enableValue: true,
+      cellClass: 'number',
+      allowedAggFuncs: ['avg', 'sum', 'min', 'max', 'count']
+    }
+  }
+
 const defaultColDef = {
     sortable: true,
     resizable: true
 }
-
-const serverSideSortingAlwaysResets = true
 
 const sideBar = {
     toolPanels: [
@@ -28,10 +40,10 @@ const sideBar = {
             toolPanelParams: {
                 suppressRowGroups: false,
                 suppressValues: true,
-                suppressPivots: true,
-                suppressPivotMode: true,
+                suppressPivots: false,
+                suppressPivotMode: false,
                 suppressSideButtons: true,
-                suppressColumnFilter: true,
+                suppressColumnFilter: false,
                 suppressColumnSelectAll: true,
                 suppressColumnExpandAll: true,
             },
@@ -39,9 +51,6 @@ const sideBar = {
     ],
     defaultToolPanel: 'columns',
 }
-
-const getRowNodeId = (data) => data.id;
-
 
 const onColumnVisible = (params) => {
     params.api.sizeColumnsToFit();
@@ -62,14 +71,13 @@ const serverSideStoreType = "partial";
 
 export default {
     columnDefs,
+    columnTypes,
     defaultColDef,
     sideBar,
-    //getRowNodeId,
     onColumnVisible,
     onSortChanged,
     rowModelType,
     rowSelection,
     cacheBlockSize,
-    serverSideStoreType,
-    //serverSideSortingAlwaysResets
+    serverSideStoreType
 }
