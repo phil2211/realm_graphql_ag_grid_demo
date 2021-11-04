@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { client } from './apolloClient';
+import { forEach } from 'lodash';
 
 export const createServerSideDatasource = function (gridOptions) {
     return {
@@ -9,7 +10,7 @@ export const createServerSideDatasource = function (gridOptions) {
                 startRow,
                 endRow,
                 sortModel,
-                // filterModel,
+                filterModel,
                 groupKeys,
                 // pivotCols,
                 // pivotMode,
@@ -20,6 +21,16 @@ export const createServerSideDatasource = function (gridOptions) {
             sortModel.map(model => model.sort = model.sort.toUpperCase());
             //const visibleColumnIds = params.columnApi.getAllDisplayedColumns().map(col => col.getColId()).filter(colName => colName !== "ag-Grid-AutoColumn");
             const fields = gridOptions.columnDefs.map(col => col.field);
+
+            const aFilterModel = [];
+            forEach(filterModel, (value, key) => {
+                aFilterModel.push({
+                    filterField: key,
+                    values: value.values
+                });
+            });
+            console.log(JSON.stringify(aFilterModel));
+            
             
             const query = {
                 query: gql`
@@ -39,7 +50,8 @@ export const createServerSideDatasource = function (gridOptions) {
                         sortModel,
                         groupKeys,
                         rowGroupCols,
-                        valueCols  
+                        valueCols,
+                        filterModel: aFilterModel 
                     }
                 }
             };
@@ -57,3 +69,36 @@ export const createServerSideDatasource = function (gridOptions) {
         }
     }
 }
+
+export const createFilterDatasource = (fieldName) => {
+    console.log(fieldName);
+    return {
+        getRows: (params) => {
+        console.log(params);
+        const query = {
+            query: gql`
+                query getFilterValues($queryInput: GetFilterValue) {
+                    getFilterValues(input: $queryInput) {
+                        filterValues
+                    }
+                }
+            `,
+            variables: {
+                "queryInput": {
+                    queryInput: fieldName
+                }
+            }
+        };
+        console.log(JSON.stringify(query));
+        client.query(query)
+            .then(res => res.data.getFilterValues)
+            .then(({ filterValues }) => {
+                //console.log('Response', lastRow, rows);
+                params.success(filterValues);
+            })
+            .catch(err => {
+                console.log('Error', err);
+                params.success(err);
+            });
+    }
+}}

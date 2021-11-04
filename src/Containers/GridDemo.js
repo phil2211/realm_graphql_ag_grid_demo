@@ -9,6 +9,7 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 import "ag-grid-enterprise";
 import '../App.css';
 import realmLogo from '../assets/realm.png';
+import agGridLogo from '../assets/ag-grid.png';
 
 const Grid = () => {
   const [gridApi, setGridApi] = useState(null);
@@ -33,6 +34,7 @@ const Grid = () => {
       <div className="card my-3">
         <div className="card-header">
           {<img src={realmLogo} alt="MongoDB Realm Logo" />}
+          {<img style={{paddingLeft: 100, paddingBottom: 22}} height={60} src={agGridLogo} alt="AG Grid Logo" />}
         </div>
       </div>
         <label>Search Grid
