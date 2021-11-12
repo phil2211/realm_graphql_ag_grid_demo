@@ -1,14 +1,14 @@
-import { createFilterDatasource } from '../lib/datasource';
+// import { createFilterDatasource } from '../lib/datasource';
 
-const getCountryFilterValues = createFilterDatasource("country");
-const getSportFilterValues = createFilterDatasource("sport");
+//const getCountryFilterValues = createFilterDatasource("country");
+//const getSportFilterValues = createFilterDatasource("sport");
 
 const columnDefs = [
     { field: "athlete" },
     { field: "age", hide: true},
-    { field: "country", enableRowGroup: true, filter: 'agSetColumnFilter', filterParams: {values: getCountryFilterValues.getRows} },
+    { field: "country", enableRowGroup: true, filter: 'agSetColumnFilter', filterParams: {values: null /*getCountryFilterValues.getRows*/} },
     { field: "year", enableRowGroup: true, hide: true },
-    { field: "sport", enableRowGroup: true, filter: 'agSetColumnFilter', filterParams: {values: getSportFilterValues.getRows} },
+    { field: "sport", enableRowGroup: true, filter: 'agSetColumnFilter', filterParams: {values: null /*getSportFilterValues.getRows*/} },
     { field: "gold", type: "valueColumn" },
     { field: "silver", type: "valueColumn", hide: true },
     { field: "bronze", type: "valueColumn", hide: true },
@@ -75,7 +75,7 @@ const cacheBlockSize = 20;
 const serverSideStoreType = "partial";
 
 export default {
-    columnDefs,
+    //columnDefs,
     columnTypes,
     defaultColDef,
     sideBar,

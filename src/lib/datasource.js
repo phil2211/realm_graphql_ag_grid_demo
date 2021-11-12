@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
-import { client } from './apolloClient';
 import { forEach } from 'lodash';
 
-export const createServerSideDatasource = function (gridOptions) {
+export const createServerSideDatasource = function ({gridOptions, client}) {
+    console.log(gridOptions)
     return {
         getRows: function (params) {
             console.log('Request', params.request)
@@ -70,7 +70,8 @@ export const createServerSideDatasource = function (gridOptions) {
     }
 }
 
-export const createFilterDatasource = (fieldName) => {
+
+export const createFilterDatasource = ({fieldName, client}) => {
     console.log(fieldName);
     return {
         getRows: (params) => {

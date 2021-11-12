@@ -1,40 +1,37 @@
-import * as Realm from "realm-web";
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import React from "react";
+import { useRealmApp } from '../RealmApp';
+import { ApolloClient, HttpLink, InMemoryCache, ApolloProvider } from "@apollo/client";
 
-export const APP_ID = "olympicwinners-rrxbw";
+export const APP_ID = process.env.REACT_APP_REALMAPP;
 const graphqlUri = `https://eu-central-1.aws.realm.mongodb.com/api/client/v2.0/app/${APP_ID}/graphql`
 
-// Connect to your MongoDB Realm app
-const app = new Realm.App(APP_ID);
-
-// Gets a valid Realm user access token to authenticate requests
-async function getValidAccessToken() {
-  // Guarantee that there's a logged in user with a valid access token
-  if (!app.currentUser) {
-    // If no user is logged in, log in an anonymous user. The logged in user will have a valid
-    // access token.
-    await app.logIn(Realm.Credentials.anonymous());
-  } else {
-    // An already logged in user's access token might be stale. To guarantee that the token is
-    // valid, we refresh the user's custom data which also refreshes their access token.
-    await app.currentUser.refreshCustomData();
-  }
-
-  return app.currentUser.accessToken
-}
-
-// Configure the ApolloClient to connect to your app's GraphQL endpoint
-export const client = new ApolloClient({
-  link: new HttpLink({
+const createRealmApolloClient = (app) => {
+  const link = new HttpLink({
+    // Realm apps use a standard GraphQL endpoint, identified by their App ID
     uri: graphqlUri,
-    // We define a custom fetch handler for the Apollo client that lets us authenticate GraphQL requests.
-    // The function intercepts every Apollo HTTP request and adds an Authorization header with a valid
-    // access token before sending the request.
+    // A custom fetch handler adds the logged in user's access token to GraphQL requests
     fetch: async (uri, options) => {
-      const accessToken = await getValidAccessToken();
-      options.headers.Authorization = `Bearer ${accessToken}`;
+      if (!app.currentUser) {
+        throw new Error(`Must be logged in to use the GraphQL API`);
+      }
+      // Refreshing a user's custom data also refreshes their access token
+      await app.currentUser.refreshCustomData();
+      // The handler adds a bearer token Authorization header to the otherwise unchanged request
+      options.headers.Authorization = `Bearer ${app.currentUser.accessToken}`;
       return fetch(uri, options);
     },
-  }),
-  cache: new InMemoryCache()
-});
+  })
+
+  const cache = new InMemoryCache();
+
+  return new ApolloClient({ link, cache });
+}
+
+export default function RealmApolloProvider({ children }) {
+  const app = useRealmApp();
+  const [client, setClient] = React.useState(createRealmApolloClient(app));
+  React.useEffect(() => {
+    setClient(createRealmApolloClient(app));
+  }, [app]);
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+}
